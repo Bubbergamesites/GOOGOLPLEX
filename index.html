@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googolplex - Main Hub</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAJX0lEQVR4AeydfWxV5R3Hv23pi20Z7dpSXmXFBbVGZk0HDhBwMgY6lyyj0xGnDA3Z3OL+WbY4pmVkSzTb2LIMgbFlJgo4QJOxDTp1gbLMOIVirLSiQjGAIK+Vemmh97Y+36OXwO299Dy39zn3nOf8bvq7955zfs/z/L7f3+ee+9K3XAx+ma1SlqnY/mn0q1sJwM8esFfsGXun2pX660oAcDAnYjSqKbjNUHfly+cOsE/sGXtHEBhJS04FAAdwMCdKOlB2BsYBgsBgTwcUnQwANp4DBiTLjkA7wJ6yt5eJSASACfKov8wiqzbYW/b4oqhLAeApggkXD8odKx1gj9lrR1wcAO7gKcLZKVfWO8BeEwTEAbBesQi83AG1RQgcAEiCs6F2yld4HGDfZ/MMwDvhkS1KL3XAAWDWpXvkfqgcmCVngFD1e6BYAjBwr+wJiwPOU0BYxIrOJA7IGSCJKWHaJQCEqdsAEuUQAMInOtIybAEgZA1PlCsAJDoSs20BIAM3331IqACQ6EjIsQ2A4L0kK9k/k/yS/f8S4b3k/8Q/4u98I/8A+S/vO0yY6XAAAAAElFTkSuQmCC">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        /* Animated Background Canvas */
+        #network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #64ffcc, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(100, 255, 204, 0.5);
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #64ffcc;
+            text-shadow: 0 0 20px rgba(100, 255, 204, 0.8);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #64ffcc, #00d4ff);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after,
+        nav a.active::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #64ffcc 50%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        /* Search Container */
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px 25px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-box button {
+            background: linear-gradient(135deg, #64ffcc, #00d4ff);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-box button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(100, 255, 204, 0.5);
+        }
+
+        /* Options Grid */
+        .options-section {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .option-card:hover {
+            background: rgba(100, 255, 204, 0.1);
+            border-color: rgba(100, 255, 204, 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 40px rgba(100, 255, 204, 0.25);
+        }
+
+        .option-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .option-card:hover .option-icon {
+            transform: scale(1.15);
+        }
+
+        .option-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .option-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="network"></canvas>
+
+    <header class="glass">
+        <div class="logo" onclick="scrollToTop()">GOOGOLPLEX</div>
+        <nav>
+            <a onclick="scrollToTop()" class="active">Home</a>
+            <a onclick="filterOptions()">Options</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>GOOGOLPLEX</h1>
+        <p>Your gateway hub. Choose from options below to get started instantly.</p>
+        
+        <div class="search-container">
+            <div class="search-box glass">
+                <input type="text" id="optionSearch" placeholder="Search options..." onkeyup="filterOptions()">
+                <button onclick="filterOptions()">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="options-section">
+        <div class="options-grid" id="optionsGrid">
+            <!-- Option 1 -->
+            <a href="projects" class="option-card glass" data-title="Games">
+                <div class="option-icon">🎮</div>
+                <div class="option-title">GAMES</div>
+                <div class="option-desc">Access primary games database and unblocked features.</div>
+            </a>
+
+            <!-- Option 2 -->
+            <a href="web" class="option-card glass" data-title="Browser">
+                <div class="option-icon">🚀</div>
+                <div class="option-title">Browser</div>
+                <div class="option-desc">Launch high-performance web applications and proxies.</div>
+            </a>
+
+            <!-- Option 3 -->
+            <a href="videos" class="option-card glass" data-title="YouTube">
+                <div class="option-icon">📺️</div>
+                <div class="option-title">YouTube</div>
+                <div class="option-desc">View YouTube videos in our secure frontend</div>
+            </a>
+
+            <!-- Option 4 -->
+            <a href="gchat" class="option-card glass" data-title="GChat">
+                <div class="option-icon">🤖</div>
+                <div class="option-title">GChat</div>
+                <div class="option-desc">Chat with our own complex AI chatbot</div>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Googolplex © 2026 — Built for Performance & Customization</p>
+    </footer>
+
+    <script>
+        // Interactive Canvas Animation (Googolplex Network Effect)
+        const canvas = document.getElementById('network');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        const particleCount = 60;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(100, 255, 204, 0.5)';
+            ctx.strokeStyle = 'rgba(100, 255, 204, 0.15)';
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Option Search Filter
+        function filterOptions() {
+            const query = document.getElementById('optionSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.option-card');
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                const desc = card.querySelector('.option-desc').innerText.toLowerCase();
+
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>
